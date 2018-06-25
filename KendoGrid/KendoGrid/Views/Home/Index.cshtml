@@ -46,8 +46,8 @@
     </div>
 
     <script>
-        $(document).ready(function (e) {
-            var ProductID = $(this).parent().next().text();
+        $(document).ready(function () {
+            //var ProductID = $(this).parent().next().text();
             $("#grid").kendoGrid({
                 pageable: true,
                 height: 550,
@@ -90,7 +90,7 @@
                             type: "GET"
                         },
                         update: {
-                            url: "https://kendouiapi.azurewebsites.net/Kendo",
+                            url: "https://kendouiapi.azurewebsites.net/Kendo/98",
                             dataType: "json",
                             type: "PATCH"
                         },
@@ -114,11 +114,11 @@
                     pageSize: 20,
                     schema: {
                         model: {
-                            id: "F10400",
-                            fields: {
-                                Id: { editable: false, type: "int" },
-                                F10400: { editable: false, type: "number" },
-                                F10401: { validation: { required: true } }
+                            id: "F10400"
+                            //fields: {
+                            //    Id: { editable: false, type: "int" },
+                            //    F10400: { editable: false, type: "number" },
+                            //    F10401: { validation: { required: true } }
                             }
                         }
                     }
