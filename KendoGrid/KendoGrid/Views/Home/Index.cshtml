@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <base href="https://demos.telerik.com/kendo-ui/grid/index">
+    <style type="text/css">
+        .customer-photo {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-size: 32px 35px;
+            background-position: center center;
+            vertical-align: middle;
+            line-height: 32px;
+            box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0,0,0,.2);
+            margin-left: 5px;
+        }
+
+        .customer-name {
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 32px;
+            padding-left: 3px;
+        }
+    </style>
+    <style>
+        html {
+            font-size: 14px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+    <title></title>
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2018.2.516/styles/kendo.material.mobile.min.css" />
+
+    <script src="https://kendo.cdn.telerik.com/2018.2.516/js/jquery.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2018.2.516/js/kendo.all.min.js"></script>
+
+
+</head>
+<body>
+
+    <div id="example">
+        <div id="grid"></div>
+    </div>
+
+    <script>
+        $(document).ready(function (e) {
+            var ProductID = $(this).parent().next().text();
+            $("#grid").kendoGrid({
+                pageable: true,
+                height: 550,
+                editable: {
+                    mode: "popup",
+                    confirmation: "請確認是否進行刪除?"
+                },
+                sortable: {
+                    mode: "single",
+                    allowUnsort: false
+                },
+                toolbar: [{ name: "create", text: "新增合約線別" }, { name: "excel", text: "匯出excel檔", iconClass: "k-icon k-i-copy" }],
+                excel: {
+                    fileName: kendo.toString(new Date, "yyyy-MM-dd") + "線別主檔.xlsx",
+                    allPages: true
+                },
+                columns: [
+                    {
+                        field: "Id",
+                        title: "ID",
+                        sortable: {
+                            initialDirection: "desc"
+                        }
+                    },
+                    {
+                        field: "F10400",
+                        title: "編號"
+                    },
+                    {
+                        field: "F10401",
+                        title: "品牌"
+                    },
+                    { command: ["edit", "destroy"], title: "&nbsp;", width: "250px" }
+                ],
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "https://kendouiapi.azurewebsites.net/Kendo",
+                            dataType: "json",
+                            type: "GET"
+                        },
+                        update: {
+                            url: "https://kendouiapi.azurewebsites.net/Kendo",
+                            dataType: "json",
+                            type: "PATCH"
+                        },
+                        destroy: {
+                            url: "https://kendouiapi.azurewebsites.net/Kendo",
+                            dataType: "json",
+                            type: "DELETE"
+                        },
+                        create: {
+                            url: "https://kendouiapi.azurewebsites.net/Kendo",
+                            dataType: "json",
+                            type: "POST"
+                        },
+                        parameterMap: function (options, operation) {
+                            if (operation !== "read" && options.models) {
+                                return { models: kendo.stringify(options.models) };
+                            }
+                        }
+                    },
+                    batch: true,
+                    pageSize: 20,
+                    schema: {
+                        model: {
+                            id: "F10400",
+                            fields: {
+                                Id: { editable: false, type: "int" },
+                                F10400: { editable: false, type: "number" },
+                                F10401: { validation: { required: true } }
+                            }
+                        }
+                    }
+                },
+                save: function () {
+                    this.refresh();
+                }
+            });
+        });
+
+        function customBoolEditor(container, options) {
+            var guid = kendo.guid();
+            $('<input class="k-checkbox" id="' + guid + '" type="checkbox" name="Discontinued" data-type="boolean" data-bind="checked:Discontinued">').appendTo(container);
+            $('<label class="k-checkbox-label" for="' + guid + '">​</label>').appendTo(container);
+        }
+    </script>
+
+</body>
+</html>
