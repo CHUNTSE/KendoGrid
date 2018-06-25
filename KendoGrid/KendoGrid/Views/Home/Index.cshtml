@@ -41,13 +41,49 @@
 </head>
 <body>
 
-    <div id="example">
-        <div id="grid"></div>
+    <div id="example" class="col-xs-18 col-md-12">
+        <div id="grid">
+            <script id="updateSite" type="text/x-kendo-template">
+                <button class="k-button   updateBt">
+                    <span class="k-icon k-i-edit"></span>&nbsp;修改
+                </button>
+            </script>
+            <script id="createSite" type="text/x-kendo-template">
+                <button class="k-button   createBt">
+                    <span class="k-icon k-i-plus"></span>&nbsp;新增產品
+                </button>
+            </script>
+            <script id="deleteSite" type="text/x-kendo-template">
+                <button class="k-button   deleteBt">
+                    <span class="k-icon k-i-close"></span>&nbsp;刪除
+                </button>
+            </script>
+        </div>
+    </div>
+
+    <div id="openSite" style="display: none; width: 400px; height: 400px">
+        <ul class="productInfo">
+            <li>
+                <label for="ID" style="padding-right:15px;">ID</label>
+                <input id="ID" name="ID" type="text">
+            </li>
+            <li>
+                <label for="F10400">編號</label>
+                <input id="F10400" name="F10400" type="text">
+            </li>
+            <li>
+                <label for="F10401">品牌</label>
+                <input id="F10401" name="F10401" type="text">
+            </li>
+        </ul>
+        <div style="display:flex;justify-content:flex-end;align-items:flex-end;height:270px;">
+            <button id="button" type="submit" class="btn btn-primary"></button>
+            <button class="cancelBtn btn btn-danger">取消</button>
+        </div>
     </div>
 
     <script>
         $(document).ready(function () {
-            //var ProductID = $(this).parent().next().text();
             $("#grid").kendoGrid({
                 pageable: true,
                 height: 550,
@@ -59,28 +95,38 @@
                     mode: "single",
                     allowUnsort: false
                 },
-                toolbar: [{ name: "create", text: "新增合約線別" }, { name: "excel", text: "匯出excel檔", iconClass: "k-icon k-i-copy" }],
+                toolbar: [{ template: kendo.template($("#createSite").html()), name: "create", text: "新增合約線別" }, { name: "excel", text: "匯出excel檔", iconClass: "k-icon k-i-copy" }],
                 excel: {
                     fileName: kendo.toString(new Date, "yyyy-MM-dd") + "線別主檔.xlsx",
                     allPages: true
                 },
                 columns: [
                     {
-                        field: "Id",
-                        title: "ID",
+                        field: "F10400",
+                        title: "編號",
                         sortable: {
                             initialDirection: "desc"
                         }
                     },
                     {
-                        field: "F10400",
-                        title: "編號"
+                        field: "Id",
+                        title: "ID"
                     },
                     {
                         field: "F10401",
                         title: "品牌"
                     },
-                    { command: ["edit", "destroy"], title: "&nbsp;", width: "250px" }
+                    //{ command: ["edit", "destroy"], title: "&nbsp;", width: "250px" }
+                    {
+                        command: [
+                            {
+                                name: "edit", text: { edit: "修改", cancel: "取消", update: "確認" }, template: kendo.template($("#updateSite").html())
+                            },
+                            {
+                                name: "destroy", text: "刪除", template: kendo.template($("#deleteSite").html())
+                            }
+                        ], width: 130
+                    }
                 ],
                 dataSource: {
                     transport: {
@@ -89,51 +135,134 @@
                             dataType: "json",
                             type: "GET"
                         },
-                        update: {
-                            url: "https://kendouiapi.azurewebsites.net/Kendo/98",
-                            dataType: "json",
-                            type: "PATCH"
-                        },
-                        destroy: {
-                            url: "https://kendouiapi.azurewebsites.net/Kendo",
-                            dataType: "json",
-                            type: "DELETE"
-                        },
+                        //update: {
+                        //    url: "https://kendouiapi.azurewebsites.net/Kendo",
+                        //    dataType: "json",
+                        //    type: "PATCH",
+                        //    complete: function (e) { $("#grid").data("KendoGrid").dataSource.read(); }
+                        //},
+                        //destroy: {
+                        //    url: "https://kendouiapi.azurewebsites.net/Kendo",
+                        //    dataType: "json",
+                        //    type: "DELETE",
+                        //    complete: function (e) { $("#grid").data("kendoGrid").dataSource.read(); }
+                        //},
                         create: {
                             url: "https://kendouiapi.azurewebsites.net/Kendo",
                             dataType: "json",
-                            type: "POST"
+                            type: "POST",
+                            complete: function (e) { $("#grid").data("kendoGrid").dataSource.read(); }
                         },
-                        parameterMap: function (options, operation) {
-                            if (operation !== "read" && options.models) {
-                                return { models: kendo.stringify(options.models) };
-                            }
-                        }
+                        //parameterMap: function (options, operation) {
+                        //    if (operation !== "read" && options.models) {
+                        //        return { models: kendo.stringify(options.models) };
+                        //    }
+                        //}
                     },
                     batch: true,
                     pageSize: 20,
-                    schema: {
-                        model: {
-                            id: "F10400"
-                            //fields: {
-                            //    Id: { editable: false, type: "int" },
-                            //    F10400: { editable: false, type: "number" },
-                            //    F10401: { validation: { required: true } }
-                            //}
-                        }
-                    }
+                    //schema: {
+                    //    model: {
+                    //        id: "F10400",
+                    //        fields: {
+                    //            Id: { type: "string" },
+                    //            F10400: { type: "string" },
+                    //            F10401: { type: "string" }
+                    //        }
+                    //    }
+                    //},
+                    pageSize: 10,
                 },
-                save: function () {
-                    this.refresh();
-                }
+                //save: function () {
+                //    this.refresh();
+                //}
             });
-        });
+            $("#grid").on("click", ".updateBt", function (e) {
+                OpenSite();
 
-        function customBoolEditor(container, options) {
-            var guid = kendo.guid();
-            $('<input class="k-checkbox" id="' + guid + '" type="checkbox" name="Discontinued" data-type="boolean" data-bind="checked:Discontinued">').appendTo(container);
-            $('<label class="k-checkbox-label" for="' + guid + '">​</label>').appendTo(container);
-        }
+                $("#button").html("修改");
+
+                var ID = $(this).parent().prev().prev().prev().text();
+                console.log(ID);
+
+                $.ajax({
+                    url: "https://kendouiapi.azurewebsites.net/Kendo/" + ID,
+                    type: "GET"
+                }).done(function (product) {
+                    console.log(product);
+                    $("#ID").val(product.Id);
+                    $("#F10400").val(product.F10400);
+                    $("#F10401").val(product.F10401);
+                });
+            });
+
+            $("#grid").on("click", ".createBt", function (e) {
+                Clear();
+                OpenSite();
+                $("#button").html("新增");
+            })
+
+            $("#grid").on("click", ".deleteBt", function (e) {
+                var ID = $(this).parent().prev().prev().prev().text();
+
+                $.ajax({
+                    url: "https://kendouiapi.azurewebsites.net/Kendo/" + ID,
+                    type: "DELETE"
+                }).done(function (result) {
+                    $("#grid").data("kendoGrid").dataSource.read();
+                    $("#openSite").data("kendoWindow").close();
+                })
+            })
+
+            $("#openSite").on("click", "#button", function (e) {
+                var PModel = {
+                    ID: $("#ID").val(),
+                    F10400: $("#F10400").val(),
+                    F10401: $("#F10401").val(),
+                }
+
+                if ($("#button").html() == "修改") {
+                    $.ajax({
+                        url: "https://kendouiapi.azurewebsites.net/Kendo/" + ID,
+                        type: "PATCH",
+                        dataType: "json",
+                        data: PModel,
+                    }).done(function (result) {
+                        $("#grid").data("kendoGrid").dataSource.read();
+                    })
+                }
+                if ($("#button").html() == "新增") {
+                    $.ajax({
+                        url: "https://kendouiapi.azurewebsites.net/Kendo",
+                        type: "POST",
+                        dataType: "json",
+                        data: PModel,
+                    }).done(function (result) {
+                        $("#grid").data("kendoGrid").dataSource.read();
+                        $("#openSite").data("kendoWindow").close();
+                    })
+                }
+
+            })
+
+            $(".cancelBtn").click(function () {
+                $("#openSite").data("kendoWindow").close();
+            })
+
+            function OpenSite() {
+                var window = $("#openSite").kendoWindow({
+                    position: { top: 50, left: 100 },
+                    title: "產品"
+                }).data("kendoWindow")
+
+                window.center().open();
+            }
+
+            function Clear() {
+                $(".productInfo input").val("");
+            }
+
+        });
     </script>
 
 </body>
