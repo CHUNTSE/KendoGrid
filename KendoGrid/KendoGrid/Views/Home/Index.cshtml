@@ -102,15 +102,15 @@
                 },
                 columns: [
                     {
-                        field: "F10400",
-                        title: "編號",
+                        field: "Id",
+                        title: "ID",
                         sortable: {
                             initialDirection: "desc"
                         }
                     },
                     {
-                        field: "Id",
-                        title: "ID"
+                        field: "F10400",
+                        title: "編號"
                     },
                     {
                         field: "F10401",
@@ -182,7 +182,7 @@
 
                 $("#button").html("修改");
 
-                var ID = $(this).parent().prev().prev().prev().text();
+                var ID = $(this).parent().prev().prev().text();
                 console.log(ID);
 
                 $.ajax({
@@ -203,7 +203,7 @@
             })
 
             $("#grid").on("click", ".deleteBt", function (e) {
-                var ID = $(this).parent().prev().prev().prev().text();
+                var ID = $(this).parent().prev().prev().text();
 
                 $.ajax({
                     url: "https://kendouiapi.azurewebsites.net/Kendo/" + ID,
