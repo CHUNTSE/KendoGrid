@@ -210,7 +210,6 @@
                     type: "DELETE"
                 }).done(function (result) {
                     $("#grid").data("kendoGrid").dataSource.read();
-                    $("#openSite").data("kendoWindow").close();
                 })
             })
 
@@ -229,6 +228,7 @@
                         data: PModel,
                     }).done(function (result) {
                         $("#grid").data("kendoGrid").dataSource.read();
+                        $("#openSite").data("kendoWindow").close();
                     })
                 }
                 if ($("#button").html() == "新增") {
